@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+lake/
+warehouse/
+.airflow/
+*.log
+spark-warehouse/
+metastore_db/
+derby.log
