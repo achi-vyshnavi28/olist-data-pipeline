@@ -29,7 +29,7 @@ order events ─► Spark Structured Streaming ─► 2 hour watermark ─► ho
 | Star schema and marts | `pipeline/gold.py` |
 | Warehouse | `pipeline/warehouse.py` (DuckDB; `analytics.v_customers_masked` hides zip codes) |
 | Orchestration | `dags/olist_pipeline.py` (Airflow: daily, retries, quality gate stops the run) |
-| CI/CD | `.github/workflows/ci.yml`: Spark tests incl. streaming, a full Airflow DAG run, Docker build and run |
+| CI/CD | `.github/workflows/ci.yml` (GitHub Actions): Spark tests incl. streaming, a full Airflow DAG run, Docker build and run; `Jenkinsfile`: the same test, pipeline, quality gate and Docker stages for Jenkins |
 | Container | `Dockerfile` (Python 3.12 + OpenJDK 17) |
 
 ## Results on the full dataset
