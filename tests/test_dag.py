@@ -6,10 +6,11 @@ import pytest
 airflow = pytest.importorskip("airflow")
 
 
-def test_dag_loads_with_the_expected_task_order():
+def test_dag_loads_with_the_expected_task_order(monkeypatch):
+    monkeypatch.setenv("AIRFLOW__CORE__LOAD_EXAMPLES", "false")
     from airflow.models import DagBag
 
-    bag = DagBag(dag_folder=str(Path(__file__).resolve().parents[1] / "dags"), include_examples=False)
+    bag = DagBag(dag_folder=str(Path(__file__).resolve().parents[1] / "dags"))  # examples off via AIRFLOW__CORE__LOAD_EXAMPLES
     assert bag.import_errors == {}
     dag = bag.get_dag("olist_batch_pipeline")
     assert dag is not None and dag.max_active_runs == 1

@@ -45,7 +45,8 @@ def test_catalog_records_lineage_owners_and_pii(ran):
 def test_gold_gate_stops_the_pipeline_on_a_broken_fact(spark, ran):
     from pipeline.spark import write_table
 
-    facts = read_table(spark, "gold", "fact_orders")
+    lazy = read_table(spark, "gold", "fact_orders")
+    facts = spark.createDataFrame(lazy.collect(), lazy.schema)  # materialize: we are about to overwrite these files
     write_table(facts.unionByName(facts.limit(1)), "gold", "fact_orders")  # duplicate one order
     with pytest.raises(quality.QualityError, match="unique:order_id on fact_orders"):
         quality.gate(spark, "gold")
