@@ -13,7 +13,10 @@ jobs:
         with: {python-version: "3.12", cache: pip}
       - run: pip install -r requirements.txt
       - name: Unit, end to end and Structured Streaming tests (native Spark reads and writes on Linux)
-        run: pytest -q
+        run: pytest -q --junitxml=reports/junit.xml
+      - name: Annotate failing tests
+        if: failure()
+        run: python scripts/ci_annotate.py reports/junit.xml
       - name: Run the full batch pipeline on the sample and keep the reports
         run: python -m pipeline.run
       - uses: actions/upload-artifact@v4
@@ -30,7 +33,10 @@ jobs:
         with: {python-version: "3.12", cache: pip}
       - run: pip install -r requirements.txt apache-airflow
       - name: DAG imports and task order
-        run: pytest -q tests/test_dag.py
+        run: pytest -q tests/test_dag.py --junitxml=reports/junit_dag.xml
+      - name: Annotate failing tests
+        if: failure()
+        run: python scripts/ci_annotate.py reports/junit_dag.xml
       - name: Execute the whole DAG once with Airflow (every task runs the real pipeline stage)
         env:
           AIRFLOW_HOME: ${{ github.workspace }}/.airflow
